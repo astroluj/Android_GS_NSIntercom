@@ -211,7 +211,6 @@ app_function (void *userdata)
   if (data->sendAudioPipeline != NULL) gst_element_set_state (data->sendAudioPipeline, GST_STATE_READY);
   if (data->recvAudioPipeline != NULL) gst_element_set_state (data->recvAudioPipeline, GST_STATE_READY);
 
-  gst_native_play
   data->video_sink = gst_bin_get_by_interface (GST_BIN (data->sendVideoPipeline), GST_TYPE_VIDEO_OVERLAY);
   if (!data->video_sink) {
     GST_ERROR ("Could not retrieve video sink");
@@ -291,29 +290,10 @@ gst_native_finalize (JNIEnv * env, jobject thiz)
 {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
 
-  if (sendVideoPipeline != NULL) {
-      jstring javaString = (*env)->NewStringUTF(env, sendVideoPipeline);
-      (*env)->ReleaseStringUTFChars (env, javaString, sendVideoPipeline);
-      (*env)->DeleteLocalRef(env, javaString);
-    }
-
-  if (recvVideoPipeline != NULL) {
-    jstring javaString = (*env)->NewStringUTF(env, recvVideoPipeline);
-    (*env)->ReleaseStringUTFChars (env, javaString, recvVideoPipeline);
-    (*env)->DeleteLocalRef(env, javaString);
-  }
-
-  if (sendAudioPipeline != NULL) {
-        jstring javaString = (*env)->NewStringUTF(env, sendAudioPipeline);
-        (*env)->ReleaseStringUTFChars (env, javaString, sendAudioPipeline);
-        (*env)->DeleteLocalRef(env, javaString);
-      }
-
-  if (recvAudioPipeline != NULL) {
-    jstring javaString = (*env)->NewStringUTF(env, recvAudioPipeline);
-    (*env)->ReleaseStringUTFChars (env, javaString, recvAudioPipeline);
-    (*env)->DeleteLocalRef(env, javaString);
-  }
+  if (sendVideoPipeline != NULL) g_free(sendVideoPipeline);
+  if (recvVideoPipeline != NULL) g_free(recvVideoPipeline);
+  if (sendAudioPipeline != NULL) g_free(sendAudioPipeline);
+  if (recvAudioPipeline != NULL) g_free(recvAudioPipeline);
 
   if (!data) return;
   GST_DEBUG ("Quitting main loop...");

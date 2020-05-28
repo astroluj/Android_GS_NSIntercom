@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := gstreamer_rtp
-LOCAL_SRC_FILES := tutorial-4.c dummy.cpp
+LOCAL_SRC_FILES := nsIntercom.c dummy.cpp
 LOCAL_SHARED_LIBRARIES := gstreamer_android
 LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog -landroid
 LOCAL_C_INCLUDES +=$(LOCAL_PATH)

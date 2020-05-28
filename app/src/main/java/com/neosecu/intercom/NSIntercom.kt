@@ -5,10 +5,18 @@ import android.util.Log
 import android.view.Surface
 import org.freedesktop.gstreamer.GStreamer
 
-open class NSIntercom() {
+class NSIntercom() {
     companion object {
+        // so file load
+        init {
+            System.loadLibrary("gstreamer_rtp")
+            System.loadLibrary("gstreamer_android")
+            nativeClassInit()
+        }
+
         // static variable
         private var nsIntercom: NSIntercom? = null
+
         @JvmStatic
         fun getInstance(): NSIntercom {
             if (nsIntercom == null) {
@@ -18,17 +26,9 @@ open class NSIntercom() {
             return nsIntercom!!
         }
 
-        // so file load
-        init {
-            System.loadLibrary("gstreamer_rtp")
-            System.loadLibrary("gstreamer_android")
-            nativeClassInit()
-        }
-
         // gstreamer 클래스 사용
         @JvmStatic
         private external fun nativeClassInit(): Boolean // Initialize native class: cache Method IDs for callbacks
-
     }
 
     // 연결
@@ -42,7 +42,7 @@ open class NSIntercom() {
     private external fun nativeSurfaceInit(surface: Any) // A new surface is available
     // 서페이스 종료
     private external fun nativeSurfaceFinalize() // Surface about to be destroyed
-    var native_custom_data: Long = 0 // Native code will use this to keep private data
+    @JvmField var native_custom_data = 0L // Native code will use this to keep private data
 
     // audio pipeline foramt
     private val audioSenderFormat = "openslessrc " +
@@ -117,7 +117,7 @@ open class NSIntercom() {
 
     // Called from native code. Native code calls this once it has created its pipeline and
     // the main loop is running, so it is ready to accept commands.
-    private fun onGStreamerInitialized() {
+    fun onGStreamerInitialized() {
         Log.i("GStreamer", "GStreamer initialized:")
     }
 }
