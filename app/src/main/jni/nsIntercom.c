@@ -211,6 +211,12 @@ app_function (void *userdata)
   if (data->sendAudioPipeline != NULL) gst_element_set_state (data->sendAudioPipeline, GST_STATE_READY);
   if (data->recvAudioPipeline != NULL) gst_element_set_state (data->recvAudioPipeline, GST_STATE_READY);
 
+  GST_DEBUG ("Setting state to PLAYING");
+  if (data->sendVideoPipeline != NULL) gst_element_set_state (data->sendVideoPipeline, GST_STATE_PLAYING);
+  if (data->recvVideoPipeline != NULL) gst_element_set_state (data->recvVideoPipeline, GST_STATE_PLAYING);
+  if (data->sendAudioPipeline != NULL) gst_element_set_state (data->sendAudioPipeline, GST_STATE_PLAYING);
+  if (data->recvAudioPipeline != NULL) gst_element_set_state (data->recvAudioPipeline, GST_STATE_PLAYING);
+
   data->video_sink = gst_bin_get_by_interface (GST_BIN (data->sendVideoPipeline), GST_TYPE_VIDEO_OVERLAY);
   if (!data->video_sink) {
     GST_ERROR ("Could not retrieve video sink");
@@ -261,7 +267,7 @@ app_function (void *userdata)
 
 /* Instruct the native code to create its internal data structure, pipeline and thread */
 static void
-gst_native_init (JNIEnv * env, jobject thiz,
+gst_native_init_play (JNIEnv * env, jobject thiz,
     jstring sendVideo, jstring recvVideo,
     jstring sendAudio, jstring recvAudio) {
   CustomData *data = g_new0 (CustomData, 1);
@@ -310,7 +316,7 @@ gst_native_finalize (JNIEnv * env, jobject thiz)
 
 /* Set pipeline to PLAYING state */
 static void
-gst_native_play (JNIEnv * env, jobject thiz)
+gst_native_resume (JNIEnv * env, jobject thiz)
 {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
   if (!data)
@@ -411,9 +417,9 @@ gst_native_surface_finalize (JNIEnv * env, jobject thiz)
 
 /* List of implemented native methods */
 static JNINativeMethod native_methods[] = {
-  {"nativeInit", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", (void *) gst_native_init},
+  {"nativeInitPlay", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", (void *) gst_native_init_play},
   {"nativeFinalize", "()V", (void *) gst_native_finalize},
-  {"nativePlay", "()V", (void *) gst_native_play},
+  {"nativeResume", "()V", (void *) gst_native_resume},
   {"nativePause", "()V", (void *) gst_native_pause},
   {"nativeSurfaceInit", "(Ljava/lang/Object;)V", (void *) gst_native_surface_init},
   {"nativeSurfaceFinalize", "()V", (void *) gst_native_surface_finalize},

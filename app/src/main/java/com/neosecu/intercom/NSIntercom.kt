@@ -32,11 +32,11 @@ class NSIntercom() {
     }
 
     // 연결
-    private external fun nativeInit(sendVideoPipeline: String?, recvVideoPipeline: String?,
+    private external fun nativeInitPlay(sendVideoPipeline: String?, recvVideoPipeline: String?,
                                     sendAudioPipeline: String?, recvAudioPipeline: String?) // Initialize native code, build pipeline, etc
     // 종료
     private external fun nativeFinalize() // Destroy pipeline and shutdown native code
-    private external fun nativePlay() // Set pipeline to PLAYING
+    private external fun nativeResume() // Set pipeline to PLAYING
     private external fun nativePause() // Set pipeline to PAUSED
     // 서페이스 연결
     private external fun nativeSurfaceInit(surface: Any) // A new surface is available
@@ -80,7 +80,7 @@ class NSIntercom() {
         this.videoRecver = String.format(videoRecvFormat, myPort)
     }
 
-    fun init(context: Context, surface: Surface? = null) {
+    fun initPlay(context: Context, surface: Surface? = null) {
         // Initialize GStreamer and warn if it fails
         try {
             GStreamer.init(context)
@@ -88,16 +88,16 @@ class NSIntercom() {
             setMessage(e.toString())
         }
         surface?.let {
-            nativeInit(videoSender, videoRecver, audioSender, audioRecver)
+            nativeInitPlay(videoSender, videoRecver, audioSender, audioRecver)
             nativeSurfaceInit(it)
         } ?: run {
-            nativeInit(null, null, audioSender, audioRecver)
+            nativeInitPlay(null, null, audioSender, audioRecver)
         }
     }
 
     fun onResume() {
         // play audio and video
-        nativePlay()
+        nativeResume()
     }
 
     fun onPause() {
