@@ -197,8 +197,7 @@ app_function (void *userdata)
   data->recvAudioPipeline = gst_parse_launch (recvAudioPipeline, &error);
 
   if (error) {
-    gchar *message =
-        g_strdup_printf ("Unable to build pipeline: %s", error->message);
+    gchar *message = g_strdup_printf ("Unable to build pipeline: %s", error->message);
     g_clear_error (&error);
     set_ui_message (message, data);
     g_free (message);
@@ -220,7 +219,7 @@ app_function (void *userdata)
   data->video_sink = gst_bin_get_by_interface (GST_BIN (data->sendVideoPipeline), GST_TYPE_VIDEO_OVERLAY);
   if (!data->video_sink) {
     GST_ERROR ("Could not retrieve video sink");
-    return NULL;
+    return NULL ;
   }
 
   /* Instruct the bus to emit signals for each received message, and connect to the interesting signals */
@@ -248,15 +247,24 @@ app_function (void *userdata)
   /* Free resources */
   g_main_context_pop_thread_default (data->context);
   g_main_context_unref (data->context);
-  if (data->sendVideoPipeline != NULL) gst_element_set_state (data->sendVideoPipeline, GST_STATE_NULL);
-  if (data->recvVideoPipeline != NULL) gst_element_set_state (data->recvVideoPipeline, GST_STATE_NULL);
-  if (data->sendAudioPipeline != NULL) gst_element_set_state (data->sendAudioPipeline, GST_STATE_NULL);
-  if (data->recvAudioPipeline != NULL) gst_element_set_state (data->recvAudioPipeline, GST_STATE_NULL);
+
   if (data->video_sink != NULL) gst_object_unref (data->video_sink);
-  if (data->sendVideoPipeline != NULL) gst_object_unref (data->sendVideoPipeline);
-  if (data->recvVideoPipeline != NULL) gst_object_unref (data->recvVideoPipeline);
-  if (data->sendAudioPipeline != NULL) gst_object_unref (data->sendAudioPipeline);
-  if (data->recvAudioPipeline != NULL) gst_object_unref (data->recvAudioPipeline);
+  if (data->sendVideoPipeline != NULL) {
+    gst_element_set_state (data->sendVideoPipeline, GST_STATE_NULL);
+    gst_object_unref (data->sendVideoPipeline);
+  }
+  if (data->recvVideoPipeline != NULL) {
+    gst_element_set_state (data->recvVideoPipeline, GST_STATE_NULL);
+    gst_object_unref (data->recvVideoPipeline);
+  }
+  if (data->sendAudioPipeline != NULL) {
+    gst_element_set_state (data->sendAudioPipeline, GST_STATE_NULL);
+    gst_object_unref (data->sendAudioPipeline);
+  }
+  if (data->recvAudioPipeline != NULL) {
+    gst_element_set_state (data->recvAudioPipeline, GST_STATE_NULL);
+    gst_object_unref (data->recvAudioPipeline);
+  }
 
   return NULL;
 }
@@ -296,6 +304,25 @@ gst_native_finalize (JNIEnv * env, jobject thiz)
 {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
 
+  // 2020-07-29 add data resources release / astroluj
+  if (data->video_sink != NULL) gst_object_unref (data->video_sink);
+    if (data->sendVideoPipeline != NULL) {
+      gst_element_set_state (data->sendVideoPipeline, GST_STATE_NULL);
+      gst_object_unref (data->sendVideoPipeline);
+    }
+    if (data->recvVideoPipeline != NULL) {
+      gst_element_set_state (data->recvVideoPipeline, GST_STATE_NULL);
+      gst_object_unref (data->recvVideoPipeline);
+    }
+    if (data->sendAudioPipeline != NULL) {
+      gst_element_set_state (data->sendAudioPipeline, GST_STATE_NULL);
+      gst_object_unref (data->sendAudioPipeline);
+    }
+    if (data->recvAudioPipeline != NULL) {
+      gst_element_set_state (data->recvAudioPipeline, GST_STATE_NULL);
+      gst_object_unref (data->recvAudioPipeline);
+    }
+
   if (sendVideoPipeline != NULL) g_free(sendVideoPipeline);
   if (recvVideoPipeline != NULL) g_free(recvVideoPipeline);
   if (sendAudioPipeline != NULL) g_free(sendAudioPipeline);
@@ -303,7 +330,8 @@ gst_native_finalize (JNIEnv * env, jobject thiz)
 
   if (!data) return;
   GST_DEBUG ("Quitting main loop...");
-  g_main_loop_quit (data->main_loop);
+  // 2020-07-29 add null check / astroluj
+  if (data->main_loop != NULL) g_main_loop_quit (data->main_loop);
   GST_DEBUG ("Waiting for thread to finish...");
   pthread_join (gst_app_thread, NULL);
   GST_DEBUG ("Deleting GlobalRef for app object at %p", data->app);
@@ -333,8 +361,7 @@ static void
 gst_native_pause (JNIEnv * env, jobject thiz)
 {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
-  if (!data)
-    return;
+  if (!data) return;
   GST_DEBUG ("Setting state to PAUSED");
   if (data->sendVideoPipeline != NULL) gst_element_set_state (data->sendVideoPipeline, GST_STATE_PAUSED);
   if (data->recvVideoPipeline != NULL) gst_element_set_state (data->recvVideoPipeline, GST_STATE_PAUSED);

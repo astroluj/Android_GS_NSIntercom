@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.neosecu.intercom
 
 import android.content.Context
@@ -29,6 +31,8 @@ class NSIntercom() {
         // gstreamer 클래스 사용
         @JvmStatic
         private external fun nativeClassInit(): Boolean // Initialize native class: cache Method IDs for callbacks
+        const val STREAM_VOICE = "voice"
+        const val STREAM_NONE = "none"
     }
 
     // 연결
@@ -44,14 +48,14 @@ class NSIntercom() {
     private external fun nativeSurfaceFinalize() // Surface about to be destroyed
     @JvmField var native_custom_data = 0L // Native code will use this to keep private data
 
-    // audio pipeline foramt
+    // audio pipeline format
     private val audioSenderFormat = "openslessrc " +
             "! audioconvert ! audio/x-raw, channels=1, rate=%d ! rtpL16pay " +
             "! udpsink host=%s port=%d" // [rate, ip, port]
     private var audioSender: String? = null
     private val audioRecvFormat = "udpsrc port=%d " +
             "! application/x-rtp, media=(string)audio, clock-rate=(int)%d, channels=(int)1, payload=(int)96 " +
-            "! rtpL16depay ! audioconvert ! autoaudiosink sync=true" // [port, rate]
+            "! rtpL16depay ! audioconvert ! audioresample ! openslessink stream_type=%s sync=false "// [port, rate, speaker type]
     private var audioRecver: String? = null
 
     // video pipeline format
@@ -61,15 +65,15 @@ class NSIntercom() {
             "! udpsink host=%s port=%d" // [cameraIndex, width, height, ip, port]
     private var videoSender: String? = null
     private val videoRecvFormat = "udpsrc port=%d " +
-            "! application/x-rtp !  rtph264depay ! h264parse ! avdec_h264 ! autovideosink sync=true" // [port]
+            "! application/x-rtp !  rtph264depay ! h264parse ! avdec_h264 ! autovideosink sync=false" // [port]
     private var videoRecver: String? = null
 
     fun setAudioSendPipeline (connectIp: String, connectPort: Int, audioRate: Int) {
         this.audioSender = String.format(audioSenderFormat, audioRate, connectIp, connectPort)
     }
 
-    fun setAudioRecvPipeline (myPort: Int, audioRate: Int) {
-        this.audioRecver = String.format(audioRecvFormat, myPort, audioRate)
+    fun setAudioRecvPipeline (myPort: Int, audioRate: Int, streamType: String = "none") {
+        this.audioRecver = String.format(audioRecvFormat, myPort, audioRate, streamType)
     }
 
     fun setVideoSendPipeline (connectIp: String, connectPort: Int, cameraIndex: Int, videoWidth: Int, videoHeight: Int) {
