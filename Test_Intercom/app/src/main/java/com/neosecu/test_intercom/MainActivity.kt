@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
@@ -25,11 +24,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val nsIntercom by lazy { NSIntercom.getInstance() }
         private const val IP = "ipAddress"
-        private const val MASK = "subnetMast"
-        private const val GATEWAY = "gateway"
-        private const val DNS_1 = "dns1"
-        private const val DNS_2 = "dns2"
-
     }
     private val ipEdit by lazy { findViewById<EditText>(R.id.ipEdit) }
     private val myInfoEdit by lazy { findViewById<EditText>(R.id.myInfoEdit) }
@@ -142,13 +136,6 @@ class MainActivity : AppCompatActivity() {
         val dhcpInfo = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).dhcpInfo
         // ip
         networkInfo[IP] = getWifiAddress(dhcpInfo.ipAddress)
-        // mask
-        networkInfo[MASK] = getWifiAddress(dhcpInfo.netmask)
-        // gateway
-        networkInfo[GATEWAY] = getWifiAddress(dhcpInfo.gateway)
-        // dns
-        networkInfo[DNS_1] = getWifiAddress(dhcpInfo.dns1)
-        networkInfo[DNS_2] = getWifiAddress(dhcpInfo.dns2)
 
         return networkInfo
     }

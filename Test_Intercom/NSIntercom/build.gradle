@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('NSIntercom-1.1.40_Release.aar'))
+artifacts.add("default", file('NSIntercom-1.1.42_Release.aar'))
