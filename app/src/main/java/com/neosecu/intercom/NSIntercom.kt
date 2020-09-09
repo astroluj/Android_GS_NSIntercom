@@ -7,6 +7,10 @@ import android.util.Log
 import android.view.Surface
 import org.freedesktop.gstreamer.GStreamer
 
+/**
+ * GStreamer를 이용한 인터폰 API
+ * @author astroluj
+ */
 class NSIntercom() {
     companion object {
         // so file load
@@ -19,6 +23,10 @@ class NSIntercom() {
         // static variable
         private var nsIntercom: NSIntercom? = null
 
+        /**
+         * 인스탄스 클래스 반환
+         * @return Instance static
+         */
         @JvmStatic
         fun getInstance(): NSIntercom {
             if (nsIntercom == null) {
@@ -31,7 +39,18 @@ class NSIntercom() {
         // gstreamer 클래스 사용
         @JvmStatic
         private external fun nativeClassInit(): Boolean // Initialize native class: cache Method IDs for callbacks
+
+        /**
+         * 모바일 기기에서 소리를 출력하는 스피커 선택
+         * 통화용 스피커
+         * @see [setAudioRecvPipeline] 함수의 마지막 매개변수
+         */
         const val STREAM_VOICE = "voice"
+        /**
+         * 모바일 기기에서 소리를 출력하는 스피커 선택
+         * 외장 스피커
+         * @see [setAudioRecvPipeline] 함수의 마지막 매개변수
+         */
         const val STREAM_NONE = "none"
     }
 
@@ -68,29 +87,64 @@ class NSIntercom() {
             "! application/x-rtp !  rtph264depay ! h264parse ! avdec_h264 ! autovideosink sync=false" // [port]
     private var videoRecver: String? = null
 
+    /**
+     * 오디오 발신 프로토콜 설정
+     * @param connectIp 오디오 통신 할 장치의 아이피
+     * @param connectPort 오디오 통신 할 장치의 포트번호
+     * @param audioRate 오디오 레이트 (서로 같은 값으로 설정해야됨)
+     */
     fun setAudioSendPipeline (connectIp: String, connectPort: Int, audioRate: Int) {
         this.audioSender = String.format(audioSenderFormat, audioRate, connectIp, connectPort)
     }
 
+    /**
+     * 오디오 수신 프로토콜 설정
+     * @param myPort 오디오 통신에 사용 할 내 포트번호
+     * @param audioRate 오디오 레이트 (서로 같은 값으로 설정해야됨)
+     * @param streamType 오디오를 연결 할 스피커 선택 (기본 외장 스피커) [STREAM_VOICE] 내장(통화용) 스피커 [STREAM_NONE] 외장 스피커
+     */
     fun setAudioRecvPipeline (myPort: Int, audioRate: Int, streamType: String = "none") {
         this.audioRecver = String.format(audioRecvFormat, myPort, audioRate, streamType)
     }
 
+    /**
+     * 비디오 발신 프로토콜 설정
+     * @param connectIp 비디오 통신 할 장치의 아이피
+     * @param connectPort 비디오 통신 할 장치의 포트번호
+     * @param cameraIndex 비디오를 전송 할 카메라 번호
+     * @param videoWidth 전송 할 비디오의 가로 사이즈
+     * @param videoHeight 전송 할 비디오의 세로 사이즈
+     */
     fun setVideoSendPipeline (connectIp: String, connectPort: Int, cameraIndex: Int, videoWidth: Int, videoHeight: Int) {
         this.videoSender = String.format(videoSenderFormat, cameraIndex, videoWidth, videoHeight, connectIp, connectPort)
     }
 
+    /**
+     * 비디오 수신 프로토콜 설정
+     * @param myPort 비디오 통신에 사용 할 내 포트번호
+     */
     fun setVideoRecvPipeline (myPort: Int) {
         this.videoRecver = String.format(videoRecvFormat, myPort)
     }
 
-    fun initPlay(context: Context, surface: Surface? = null) {
+    /**
+     * 초기화
+     * @param context GStreamer 초기화에 사용
+     */
+    fun init (context: Context) {
         // Initialize GStreamer and warn if it fails
         try {
             GStreamer.init(context)
         } catch (e: Exception) {
             setMessage(e.toString())
         }
+    }
+
+    /**
+     * 통신 시작
+     * @param surface 카메라가 연결 된 서페이스(기본 오디오 통신만 실행 비디오 통신 사용시에 매개변수 입력)
+     */
+    fun play(surface: Surface? = null) {
         surface?.let {
             nativeInitPlay(videoSender, videoRecver, audioSender, audioRecver)
             nativeSurfaceInit(it)
@@ -99,11 +153,17 @@ class NSIntercom() {
         }
     }
 
+    /**
+     * 통신 다시 시작 [onPause] 사용 후 사용
+     */
     fun onResume() {
         // play audio and video
         nativeResume()
     }
 
+    /**
+     * 통신 일시 정지 (연결은 되어있는 상태)
+     */
     fun onPause() {
         // stop audio and video
         nativePause()
@@ -114,13 +174,19 @@ class NSIntercom() {
         nativeFinalize()
     }
 
-    // Called from native code. This sets the content of the TextView from the UI thread.
+    /**
+     * GStreamer 사용 중 발생하는 네이티브 에러를 반환
+     * Override 하여 사용 가능
+     * @param message 에러 메세지
+     */
     fun setMessage(message: String) {
         Log.d ("NSIntercom", message)
     }
 
-    // Called from native code. Native code calls this once it has created its pipeline and
-    // the main loop is running, so it is ready to accept commands.
+    /**
+     * Gstreamer 초기화 완료 콜백
+     * Override 하여 사용 가능
+     */
     fun onGStreamerInitialized() {
         Log.i("GStreamer", "GStreamer initialized:")
     }

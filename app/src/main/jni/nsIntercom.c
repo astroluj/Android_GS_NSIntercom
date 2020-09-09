@@ -302,7 +302,9 @@ gst_native_init_play (JNIEnv * env, jobject thiz,
 static void
 gst_native_finalize (JNIEnv * env, jobject thiz)
 {
+  if (custom_data_field_id == NULL) return ;
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
+  if (!data) return;
 
   // 2020-07-29 add data resources release / astroluj
   if (data->video_sink != NULL) gst_object_unref (data->video_sink);
@@ -328,7 +330,6 @@ gst_native_finalize (JNIEnv * env, jobject thiz)
   if (sendAudioPipeline != NULL) g_free(sendAudioPipeline);
   if (recvAudioPipeline != NULL) g_free(recvAudioPipeline);
 
-  if (!data) return;
   GST_DEBUG ("Quitting main loop...");
   // 2020-07-29 add null check / astroluj
   if (data->main_loop != NULL) g_main_loop_quit (data->main_loop);
@@ -396,8 +397,7 @@ static void
 gst_native_surface_init (JNIEnv * env, jobject thiz, jobject surface)
 {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
-  if (!data)
-    return;
+  if (!data) return;
   ANativeWindow *new_native_window = ANativeWindow_fromSurface (env, surface);
   GST_DEBUG ("Received surface %p (native window %p)", surface,
       new_native_window);
@@ -425,9 +425,9 @@ gst_native_surface_init (JNIEnv * env, jobject thiz, jobject surface)
 static void
 gst_native_surface_finalize (JNIEnv * env, jobject thiz)
 {
+  if (custom_data_field_id == NULL) return ;
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
-  if (!data)
-    return;
+  if (!data) return;
   GST_DEBUG ("Releasing Native Window %p", data->native_window);
 
   if (data->video_sink) {
