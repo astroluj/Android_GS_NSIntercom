@@ -5,8 +5,6 @@ LOCAL_MODULE    := gstreamer_rtp
 LOCAL_SRC_FILES := nsIntercom.c dummy.cpp
 LOCAL_SHARED_LIBRARIES := gstreamer_android
 LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog -landroid
-LOCAL_CFLAGS += -fopenmp
-LOCAL_LDFLAGS += -fopenmp
 LOCAL_C_INCLUDES +=$(LOCAL_PATH)
 include $(BUILD_SHARED_LIBRARY)
 

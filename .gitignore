@@ -19,6 +19,7 @@
 ### Android ###
 #*.so
 app/src/main/obj/*
+app/src/main/jni/**/*.so
 *.o
 # Built application files
 *.apk
