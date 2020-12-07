@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.neosecu.intercom
+package com.astroluj.intercom
 
 import android.content.Context
 import android.util.Log

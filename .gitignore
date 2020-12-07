@@ -17,7 +17,8 @@
 # Edit at https://www.gitignore.io/?templates=java,gradle,kotlin,android,intellij+all,androidstudio
 
 ### Android ###
-*.so
+#*.so
+app/src/main/obj/*
 *.o
 # Built application files
 *.apk

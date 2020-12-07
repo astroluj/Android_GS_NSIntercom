@@ -462,12 +462,12 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   java_vm = vm;
 
   if ((*vm)->GetEnv (vm, (void **) &env, JNI_VERSION_1_4) != JNI_OK) {
-    __android_log_print (ANDROID_LOG_ERROR, "NSIntercom",
+    __android_log_print (ANDROID_LOG_ERROR, "AOSIntercom",
         "Could not retrieve JNIEnv");
     return 0;
   }
   jclass klass = (*env)->FindClass (env,
-      "com/neosecu/intercom/NSIntercom");
+      "com/astroluj/intercom/NSIntercom");
   (*env)->RegisterNatives (env, klass, native_methods,
       G_N_ELEMENTS (native_methods));
 
