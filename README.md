@@ -45,7 +45,7 @@ allprojects {
 Application build.gradle
 <code><pre>
 dependencies {
-	implementation 'com.github.astroluj:Android_Intercom:1.2.11'
+	implementation 'com.github.astroluj:Android_Intercom:1.2.17'
 }
 </pre></code>
 
