@@ -1,2 +1,3 @@
-rootProject.name='Android_Intercom'
+include ':GS_NSIntercom'
+rootProject.name='Android_GS_NSIntercom'
 include ':app'

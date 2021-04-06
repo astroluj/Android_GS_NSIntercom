@@ -18,8 +18,8 @@
 
 ### Android ###
 #*.so
-app/src/main/obj/*
-app/src/main/jni/**/*.so
+GS_NSIntercom/src/main/obj/*
+GS_NSIntercom/src/main/jni/**/*.so
 *.o
 # Built application files
 *.apk
