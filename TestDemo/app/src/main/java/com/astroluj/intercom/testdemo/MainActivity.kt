@@ -1,4 +1,4 @@
-package com.astroluj.intercom_testdemo
+package com.astroluj.intercom.testdemo
 
 import android.Manifest
 import android.annotation.TargetApi
@@ -11,7 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.astroluj.intercom.NSIntercom
-import com.astroluj.intercom_testdemo.NetworkUtils.Companion.IP
+import com.astroluj.intercom.testdemo.NetworkUtils.Companion.IP
 import java.util.*
 
 class MainActivity : AppCompatActivity() {

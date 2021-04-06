@@ -19,16 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep public class com.astroluj.** { public protected *; }
--keep public interface com.astroluj.** { public protected *; }
--keep public class org.freedesktop.gstreamer.** { public protected *; }
--keep public interface org.freedesktop.gstreamer.** { public protected *; }
-
--dontwarn org.**
--dontwarn junit.**
-
-# 줄번호 유지
--renamesourcefileattribute astroluj.intercom
--keepattributes SourceFile, LineNumberTable, Signature, Exceptions, *Annotation*, InnerClasses, EnclosingMethod
-# variable names
--keepparameternames

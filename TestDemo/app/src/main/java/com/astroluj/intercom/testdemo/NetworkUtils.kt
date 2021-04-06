@@ -1,4 +1,4 @@
-package com.astroluj.intercom_testdemo
+package com.astroluj.intercom.testdemo
 
 import android.content.Context
 import android.net.ConnectivityManager
