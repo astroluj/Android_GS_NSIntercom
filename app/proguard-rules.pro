@@ -28,7 +28,7 @@
 -dontwarn junit.**
 
 # 줄번호 유지
--renamesourcefileattribute astroluj.intercom
+-renamesourcefileattribute astroluj.gs_intercom
 -keepattributes SourceFile, LineNumberTable, Signature, Exceptions, *Annotation*, InnerClasses, EnclosingMethod
 # variable names
 -keepparameternames
