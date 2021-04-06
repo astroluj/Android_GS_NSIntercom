@@ -42,7 +42,7 @@ android {
             targetSdkVersion 30
             versionCode versionNumber
             versionName "${versionMajor}.${versionMinor}.${versionPatch}_Release"
-            archivesBaseName = "NSIntercom"
+            archivesBaseName = "GS_NSIntercom"
         }
 
         android.libraryVariants.all { variant ->
@@ -86,7 +86,7 @@ android {
 }
 // Make document
 tasks.dokka {
-    moduleName = 'NSIntercom'
+    moduleName = 'GS_NSIntercom'
     outputFormat = 'html'
     outputDirectory = "$buildDir/docs"
     sourceDirs = files('src/main/java')
