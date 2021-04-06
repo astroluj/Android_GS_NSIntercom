@@ -56,7 +56,7 @@ dependencies {
       Apache 2.0 License
   </a>
   <br>
-  <a href="https://www.gnu.org/licenses/lgpl-3.0.html">
+  <a href="https://www.gnu.org/licenses/lgpl-2.1.html">
       LGPL 3.0 License
   </a>
 </p>
