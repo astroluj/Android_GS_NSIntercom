@@ -39,6 +39,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     // 인터폰 LGPL
     // https://github.com/astroluj/Android_Intercom.git
-    implementation project(path: ":GS_NSIntercom")
-    // implementation "com.github.astroluj:Android_Intercom:1.2.12"
+    // implementation project(path: ":GS_NSIntercom")
+    implementation "com.github.astroluj:Android_GS_NSIntercom:1.2.17"
 }
