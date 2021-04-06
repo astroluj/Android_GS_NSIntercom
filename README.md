@@ -57,7 +57,7 @@ dependencies {
   </a>
   <br>
   <a href="https://www.gnu.org/licenses/lgpl-2.1.html">
-      LGPL 3.0 License
+      LGPL 2.1 License
   </a>
 </p>
 
