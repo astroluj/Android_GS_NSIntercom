@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Intercom_TestDemo</string>
+
+    <string name="txtSoundPlay">음성 통신 시작</string>
+    <string name="txtSoundPause">음성 통신 일시 정지</string>
+    <string name="txtVideoPlay">영상 통신 시작</string>
+    <string name="txtVideoPause">영상 통신 일시 정지</string>
+
+    <string name="txtSpeakerMode">스피커 모드</string>
+    <string name="txtVideoMode">영상 수신</string>
+</resources>

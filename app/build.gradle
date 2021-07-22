@@ -1,0 +1,101 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.dokka-android'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.astroluj'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+
+    //File 불러오기
+    def versionPropsFile = file('version.properties')
+
+    //File Read 여부 체크
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        //Release 할대만 VersionCode 및 patch 값을 Count up해 준다.
+        def value = 0
+        def runTasks = gradle.startParameter.taskNames
+        if ('assemble' in runTasks || 'assembleRelease' in runTasks || 'aR' in runTasks) {
+            value = 1
+        }
+
+        def versionMajor = versionProps['VERSION_MAJOR'].toInteger()
+        def versionMinor = versionProps['VERSION_MINOR'].toInteger()
+        def versionPatch = versionProps['VERSION_PATCH'].toInteger() + value
+        def versionNumber = versionProps['VERSION_NUMBER'].toInteger() + value
+        //Build 정보는 Debug, Release 상관없이 빌드하면 무조건 Count up
+        def versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+
+        versionProps['VERSION_PATCH'] = versionPatch.toString()
+        versionProps['VERSION_BUILD'] = versionBuild.toString()
+        versionProps['VERSION_NUMBER'] = versionNumber.toString()
+
+        //update 된 설정값들을 다시 version.properties 파일에 쓰기
+        versionProps.store(versionPropsFile.newWriter(), null)
+        defaultConfig {
+            minSdkVersion 19
+            targetSdkVersion 30
+            versionCode versionNumber
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}_Release"
+            archivesBaseName = "GS_NSIntercom"
+        }
+
+        android.libraryVariants.all { variant ->
+            variant.outputs.all { output ->
+                outputFileName = "${archivesBaseName}-${android.defaultConfig.versionName}.aar"
+            }
+        }
+    } else {
+        throw new Exception("Could not read version.properties!")
+    }
+
+    // Jni Setting
+    sourceSets.main {
+        jni.srcDirs = []
+        jniLibs.srcDirs 'src/main/jniLibs'
+    }
+
+    task buildNative(type: Exec) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def command = properties.getProperty('ndk.dir', null) + "\\ndk-build.cmd"
+        commandLine command, '-C', file('src/main/jni').absolutePath, "NDK_LIBS_OUT=../jniLibs"
+    }
+    task cleanNative(type: Exec, description: 'Clean JNI object files') {
+        def ndkDir = project.android.ndkDirectory.absolutePath
+        commandLine "$ndkDir/ndk-build.cmd",
+                '-C', file('src/main/jni').absolutePath, // Change src/main/jni the relative path to your jni source
+                'clean'
+    }
+    /*clean.dependsOn 'cleanNative'
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn buildNative
+    }*/
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+// Make document
+tasks.dokka {
+    moduleName = 'GS_NSIntercom'
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/docs"
+    sourceDirs = files('src/main/java')
+    skipEmptyPackages = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+}
