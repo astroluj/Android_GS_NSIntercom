@@ -21,6 +21,10 @@
 GS_NSIntercom/src/main/obj/*
 GS_NSIntercom/src/main/jni/**/*.so
 *.o
+
+# main/jni
+GS_NSIntercom/src/main/jni/
+
 # Built application files
 *.apk
 *.ap_
