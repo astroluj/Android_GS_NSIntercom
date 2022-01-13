@@ -1,0 +1,68 @@
+apply plugin: 'maven-publish'
+
+def versionPropsFile = file('version.properties')
+def developerPropsFile = file('developer.properties')
+
+if (versionPropsFile.canRead() && developerPropsFile.canRead()) {
+    def versionProps = new Properties()
+    def developerProps = new Properties()
+
+    versionProps.load(new FileInputStream(versionPropsFile))
+    developerProps.load(new FileInputStream(developerPropsFile))
+
+    def LIB_GROUP_ID = developerProps["github.group"]
+    def LIB_ARTIFACT_ID = "Android_GS_NSIntercom"
+    def versionMajor = versionProps['VERSION_MAJOR'].toInteger()
+    def versionMinor = versionProps['VERSION_MINOR'].toInteger()
+    def versionPatch = versionProps['VERSION_PATCH'].toInteger()
+    def LIB_VERSION = "${versionMajor}.${versionMinor}.${versionPatch}"
+
+    def GIT_ID = developerProps["github.id"]
+    def GIT_TOKEN = developerProps["github.accessToken"]
+    def GIT_REPO_NAME = "Android_GS_NSIntercom"
+
+    task sourceJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier "sources"
+    }
+
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // from components.release
+                groupId LIB_GROUP_ID
+                artifactId LIB_ARTIFACT_ID.toLowerCase()
+                version LIB_VERSION
+                artifact("$buildDir/outputs/aar/${LIB_ARTIFACT_ID}-${LIB_VERSION}_Release.aar")
+                artifact(sourceJar)
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+
+                    //Iterate over thdde compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.api.allDependencies.each {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                name = "GitHubPackages"
+
+                // Replace GITHUB_USERID with your personal or organisation user ID and
+                // REPOSITORY with the name of the repository on GitHub
+                url = uri("https://maven.pkg.github.com/${GIT_ID}/${GIT_REPO_NAME}")
+
+                credentials {
+                    username = GIT_ID
+                    password = GIT_TOKEN
+                }
+            }
+        }
+    }
+} else {
+    throw new Exception("Could not read version.properties!")
+}

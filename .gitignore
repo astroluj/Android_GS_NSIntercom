@@ -17,6 +17,9 @@
 # Edit at https://www.gitignore.io/?templates=java,gradle,kotlin,android,intellij+all,androidstudio
 
 ### Android ###
+# dev info
+src/developer.properties
+
 #*.so
 GS_NSIntercom/src/main/obj/*
 GS_NSIntercom/src/main/jni/**/*.so
