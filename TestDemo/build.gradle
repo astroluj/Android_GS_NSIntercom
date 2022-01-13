@@ -1,10 +1,19 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.4.32"
+    ext.kotlin_version = "1.6.10"
     repositories {
         google()
-        jcenter()
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/astroluj/Android_RTC_NSIntercom")
+            credentials {
+                username = "astroluj"
+                password = "ghp_akUBZp" +
+                        "JUgYbhaf0Hr5V3K" +
+                        "OcuHySPVD4GhlAV"
+            }
+        }
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.3"
@@ -18,9 +27,17 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
-        maven { url 'https://jitpack.io' }
-        jcenter()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/astroluj/Android_RTC_NSIntercom")
+            credentials {
+                username = "astroluj"
+                password = "ghp_akUBZp" +
+                        "JUgYbhaf0Hr5V3K" +
+                        "OcuHySPVD4GhlAV"
+            }
+        }
+        mavenCentral()
     }
 }
 
