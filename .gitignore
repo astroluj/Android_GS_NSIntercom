@@ -18,7 +18,7 @@
 
 ### Android ###
 # dev info
-src/developer.properties
+app/developer.properties
 
 #*.so
 GS_NSIntercom/src/main/obj/*
