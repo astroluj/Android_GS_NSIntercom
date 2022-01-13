@@ -41,7 +41,9 @@ repositories {
         url = uri("https://maven.pkg.github.com/astroluj/Android_GS_NSIntercom")
         credentials {
             username = "astroluj"
-            password = "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"
+            password = "ghp_akUBZp
+	    JUgYbhaf0Hr5V3K
+	    OcuHySPVD4GhlAV"
         }
     }
 }
