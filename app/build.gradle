@@ -15,19 +15,10 @@ afterEvaluate {
                 from components.release
 
                 // You can then customize attributes of the publication as shown below.
-                groupId = 'com.astroluj.intercom'
+                groupId = 'com.github.astroluj'
                 artifact androidSourcesJar
                 artifactId = 'android_gs_nsintercom'
-                version = '1.2.25'
-            }
-            // Creates a Maven publication called “debug”.
-            debug(MavenPublication) {
-                // Applies the component for the debug build variant.
-                from components.debug
-
-                groupId = 'com.astroluj.intercom'
-                artifactId = 'android_gs_nsintercom-debug'
-                version = '1.2.25'
+                version = '1.2.26'
             }
         }
     }
