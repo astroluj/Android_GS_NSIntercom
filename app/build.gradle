@@ -4,17 +4,29 @@ apply plugin: 'org.jetbrains.dokka-android'
 /*apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.astroluj'*/
 // apply from: file('publish.gradle')
-group = 'com.github.astroluj'
+// group = 'com.github.astroluj'
 apply plugin: 'maven-publish'
 afterEvaluate {
     publishing {
         publications {
+            // Creates a Maven publication called "release".
             release(MavenPublication) {
+                // Applies the component for the release build variant.
                 from components.release
 
+                // You can then customize attributes of the publication as shown below.
                 groupId = 'com.astroluj.intercom'
-                artifactId = 'android_gs_nsintercom'
-                version = '1.2.22'
+                artifactId = 'android_gs_nsintercom-debug'
+                version = '1.2.23'
+            }
+            // Creates a Maven publication called “debug”.
+            debug(MavenPublication) {
+                // Applies the component for the debug build variant.
+                from components.debug
+
+                groupId = 'com.astroluj.intercom'
+                artifactId = 'android_gs_nsintercom-debug'
+                version = '1.2.23'
             }
         }
     }
