@@ -36,16 +36,7 @@ private fun intercomOff () {
 Project build.gradle
 <code><pre>
 repositories {
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/astroluj/Android_GS_NSIntercom")
-        credentials {
-            username = "astroluj"
-            password = "ghp_akUBZp
-	    JUgYbhaf0Hr5V3K
-	    OcuHySPVD4GhlAV"
-        }
-    }
+    maven { url 'https://jitpack.io' }
 }
 
 </pre></code>
