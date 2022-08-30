@@ -1,9 +1,27 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.dokka-android'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.astroluj'
+/*apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.astroluj'*/
 // apply from: file('publish.gradle')
+// group = 'com.github.astroluj'
+apply plugin: 'maven-publish'
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.github.astroluj'
+                artifactId = 'Android_GS_NSIntercom'
+                version = '1.2.29'
+            }
+        }
+    }
+}
 
 android {
     compileSdkVersion 30
@@ -80,14 +98,12 @@ android {
                 '-C', file('src/main/jni').absolutePath, // Change src/main/jni the relative path to your jni source
                 'clean'
     }
-
     /*clean.dependsOn 'cleanNative'
 
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn buildNative
     }*/
 }
-
 // Make document
 tasks.dokka {
     moduleName = 'GS_NSIntercom'
