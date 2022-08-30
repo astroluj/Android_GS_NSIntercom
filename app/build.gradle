@@ -9,12 +9,12 @@ apply plugin: 'maven-publish'
 afterEvaluate {
     publishing {
         publications {
-            mavenJava(MavenPublication) {
+            release(MavenPublication) {
                 from components.release
 
                 groupId = 'com.astroluj.intercom'
                 artifactId = 'android_gs_nsintercom'
-                version = '1.2.21'
+                version = '1.2.22'
             }
         }
     }
