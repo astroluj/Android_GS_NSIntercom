@@ -16,8 +16,9 @@ afterEvaluate {
 
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.astroluj.intercom'
-                artifactId = 'android_gs_nsintercom-debug'
-                version = '1.2.24'
+                artifact androidSourcesJar
+                artifactId = 'android_gs_nsintercom'
+                version = '1.2.25'
             }
             // Creates a Maven publication called “debug”.
             debug(MavenPublication) {
@@ -26,7 +27,7 @@ afterEvaluate {
 
                 groupId = 'com.astroluj.intercom'
                 artifactId = 'android_gs_nsintercom-debug'
-                version = '1.2.24'
+                version = '1.2.25'
             }
         }
     }
@@ -107,11 +108,16 @@ android {
                 '-C', file('src/main/jni').absolutePath, // Change src/main/jni the relative path to your jni source
                 'clean'
     }
+
     /*clean.dependsOn 'cleanNative'
 
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn buildNative
     }*/
+}
+task androidSourcesJar(type: Jar) {
+    classifier 'sources'
+    from android.sourceSets.main.java.srcDirs
 }
 // Make document
 tasks.dokka {
