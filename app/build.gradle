@@ -75,7 +75,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    task buildNative(type: Exec) {
+    /*task buildNative(type: Exec) {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         def command = properties.getProperty('ndk.dir', null) + "\\ndk-build.cmd"
@@ -86,7 +86,7 @@ android {
         commandLine "$ndkDir/ndk-build.cmd",
                 '-C', file('src/main/jni').absolutePath, // Change src/main/jni the relative path to your jni source
                 'clean'
-    }
+    }*/
     /*clean.dependsOn 'cleanNative'
 
     tasks.withType(JavaCompile) {
@@ -120,7 +120,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.astroluj'
                 artifactId = 'Android_GS_NSIntercom'
-                version = '1.2.30'
+                version = '1.2.32'
             }
         }
     }
