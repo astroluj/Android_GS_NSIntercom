@@ -43,7 +43,7 @@ repositories {
 Application build.gradle
 <code><pre>
 dependencies {
-	implementation '<com class="github astroluj:a"></com>android_gs_nsintercom:1.2.19'
+	implementation '<com class="github astroluj:a"></com>android_gs_nsintercom:1.2.32'
 }
 </pre></code>
 
